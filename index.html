@@ -549,20 +549,64 @@
       </style>
 
       <script>
+          var error;
           function formSubmit(){
-            alert($("#userEmailTextBox").val())
-            
+            var errMsg = "";
+            error = new Array;
   
+            // alert($("#userEmailTextBox").val())
+            isEmail($("#userEmailTextBox").val());
+            // alert($("#userNameTextBox").val());
+            isAccount($("#userNameTextBox").val(),1);
+            // alert($("#passwordTextBox").val());
+            isAccount($("#passwordTextBox").val(),2);
+            
+            if(error.email)   errMsg += "信箱有誤.";
+            if(error.account) errMsg += "帳號有誤.";
+            if(error.password) errMsg += "密碼有誤.";
+ 
+            if(errMsg != ""){
+              $("#form1").attr("onsubmit","return false");
+              alert(errMsg);
+              // alert($("#form1").attr("onsubmit"));
+
+            }else{
+              alert("驗證通過");
+            }
           }
 
+          //郵件驗證
           function isEmail(strEmail) {
-            if (strEmail.search(/^\w ((-\w )|(\.\w ))*\@[A-Za-z0-9] ((\.|-)[A-Za-z0-9] )*\.[A-Za-z0-9] $/) != -1)
+         
+            //Regular expression Testing
+            var emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
+            
+            // //validate ok or not
+            if(strEmail.search(emailRule)!= -1){
               return true;
-            else
-              alert("oh");
+            }else{
+              error['email']= true;
+            }
+          }
+
+          //帳號密碼驗證
+          function isAccount(strAccount, type) {
+            //Regular expression Testing
+            var accountRule = /\w/; //只允許輸入英文字母及數字
+            
+            // //validate ok or not
+            if(strAccount.search(accountRule)!= -1){
+              return true;
+            }else{
+              if(type == 1){
+                error['account'] = true;
+              }else if(type == 2){
+                error['password']= true;
+              }
+            }
           }
       </script>
-      <form id="form1" class="mc-trial row form-horizontal" action="" method="">
+      <form id="form1" class="mc-trial row form-horizontal" method="POST" action="./echo.php">
           <div class="form-group">
               <label class="control-label col-sm-2" for="userNameTextBox">
                       <!-- <span class="glyphicon glyphicon-user"></span>  -->
@@ -611,7 +655,7 @@
         <!-- End email input -->
         <div id="form1-div" class="row">
           <p>
-            <button id="form1-btn" name="submit" type="submit" class="btn btn-submit" onclick="formSubmit()">
+            <button id="form1-btn" name="submit" type="submit" class="btn btn-submit" onclick="formSubmit()" value="success">
             Submit <i class="fa fa-arrow-right"></i></button>
           </p>
         </div>
@@ -643,6 +687,7 @@
   <script src="js/bootstrap.min.js"></script>
   <script src="js/custom.js"></script>
   <script src="contactform/contactform.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
 
 </body>
 
